@@ -1,87 +1,92 @@
-import { useState, useEffect } from 'react'
-// import reactLogo from './assets/react.svg'
-// import viteLogo from '/vite.svg'
-import './App.css'
-import axios from 'axios'
+import { useState, useEffect } from "react";
+
+import "./App.css";
+import axios from "axios";
 
 function App() {
   // const [count, setCount] = useState(0)
 
-  const [data, setData] = useState()
-  const [newTodo, setNewTodo] = useState(
-   { todo :"",
-  created : Date.now()
-}); //state for new todo input 
-
+  const [data, setData] = useState();
+  const [newToDo, setNewToDo] = useState({
+    todo: "",
+    created: Date.now(),
+  });
   useEffect(() => {
-
     axios({
       method: "get",
-      url: "http://localhost:3000/gettodos"
+      url: "http://localhost:3000/gettodos",
     })
-      .then(res => {
-        console.log("res", res)
-        setData(res.data)
+      .then((res) => {
+        console.log("res", res);
+        // console.log("sorted", sorted)
+        setData(res.data);
       })
-      .catch(err => console.log("err", err))
+      .catch((err) => console.log("err", err));
+  }, []);
 
+  const handleNewToDo = (e) => {
+    console.log("handleNewToDo Hit", e);
+    console.log("handleNewToDo Hit", e.target);
+    console.log("handleNewToDo Hit", e.target.value);
 
-  }, [])
+    setNewToDo((prev) => ({
+      ...prev,
+      todo: e.target.value,
+    }));
+  };
+  const handleSubmit = (e) => {
+    console.log("HandleSubmit HIT", newToDo);
 
-  //add new todo
-  const handleAddTodo = () => {
-    if(!newTodo.trim()) return; //stop adding empty todos
-    const todoItem = {todo: newTodo, created: new Date()}
-  }
+    console.log("i am getting stuff");
+    axios({
+      method: "post",
+      url: "http://localhost:3000/create",
+      data: newToDo,
+    })
+      .then((res) => {
+        console.log("res", res);
+        // setNewToDo({todo: ""})
+      })
+      .catch((err) => console.log(reportError));
+  };
 
-  axios({
-    method: "post",
-    url: "http://localhost:3000/create",
-    data: todoItem, 
-  })
-  .then((res) => {
-    console.log("create:", res);
-    setData([...data, res.data]); //update the list with the new item
-  }) 
-  .catch((err) => console.log("Error adding todo", err));
+  const handleDelete = (e) => {
+    console.log("DEL Hit", e.target.id);
 
+    axios({
+      method: "delete",
+      url: `http://localhost:3000/delete/${e.target.id}`,
+    })
+      .then((res) => {
+        console.log("re", res);
+        console.log(res.data._id);
+        setData((prev) => prev.filter((item) => item._id != res.data._id));
+      })
+      .catch((err) => console.log(err));
+  };
 
   return (
     <>
-
-    <h1>ToDo List</h1>
-    <div style={{marginBotton: "20px"}}>
-      <input type="text"
-      placeholder="Enter todo"
-      value={newTodo}
-      onChange={(e) => setNewTodo(e.target.value)}
-      style={{marginRight: "10px", padding: "5px"}} />
-      <button onClick={handleAddTodo} style={{padding: "5px"}}>
-        Add Todo
-      </button>
-    </div>
-
-   
-
-
-
       {console.log("data", data)}
 
-   
-        {data && data.map((item) => {
-          return (
-            <div key={item.id} style={{ border: '2px solid red' }}>
-
-            <p> {item.todo}</p>
-            <button>delete</button>
-            <button>edit</button>
-         
-            </div>
-          )
-        })}
-
+      {data &&
+        data
+          .sort((a, b) => b.created - a.created)
+          .map((item) => {
+            return (
+              <div key={item._id} style={{ marginBottom: "20px" }}>
+                <div style={{ border: "2px solid red" }}>
+                  <p> {item.todo}</p>
+                  <button id={item._id} onClick={(e) => handleDelete(e)}>
+                    delete
+                  </button>
+                  <button>edit</button>
+                </div>
+              </div>
+            );
+          })}
     </>
-  )
+  );
 }
 
-export default App
+export default App;
