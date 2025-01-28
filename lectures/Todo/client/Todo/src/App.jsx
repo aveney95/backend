@@ -6,11 +6,24 @@ import axios from "axios";
 function App() {
   // const [count, setCount] = useState(0)
 
-  const [data, setData] = useState();
-  const [newToDo, setNewToDo] = useState({
-    todo: "",
-    created: Date.now(),
-  });
+  const [data, setData] = useState()
+
+  // test
+  // test
+  // test
+  const [newToDo, setNewToDo] = useState(
+    {
+      todo: "",
+      created: Date.now()
+    }
+  )
+
+
+  useEffect(() => {
+    console.log("useEFFECT TRIGGERED")
+  }, [data])
+
+
   useEffect(() => {
     axios({
       method: "get",
