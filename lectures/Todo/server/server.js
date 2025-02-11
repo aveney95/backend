@@ -10,17 +10,18 @@ require('dotenv').config()
 
 const PORT = 3000
 
-
-
-
-
 const Schema = mongoose.Schema
 
 const ToDoSchema = new Schema(
     {
 
-        todo: String   ,
-        created:  Number
+        todo:
+        {
+            type: String,
+            required: true
+        }
+        ,
+        created: Number
 
     }
 )
