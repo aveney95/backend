@@ -28,9 +28,6 @@ function App() {
       data: login
     })
       .then(res => console.log("res", res.data))
-      
-      
-
       .catch(error => console.log(error))
   }
   const handleRegister = (e) => {

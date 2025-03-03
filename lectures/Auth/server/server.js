@@ -2,42 +2,15 @@ const express = require('express')
 const cors = require("cors")
 const mongoose = require("mongoose")
 const bcrypt = require('bcrypt')
-
 const app = express()
-
+require('dotenv').config()
 app.use(cors(
     { origin: 'http://localhost:5173' }
 ))
 
-const Schema = mongoose.Schema
-
-const AuthSchema = new Schema(
-    {
-
-        username:
-        {
-            type: String,
-            required: true
-        }
-        ,
-        password: {
-            type: String,
-            required: true
-
-        },
-        created: Number
-
-    }
-)
-const Auth = mongoose.model('Auth', AuthSchema)
-
-
-
-require('dotenv').config()
-
 app.use(express.json())
-
-
+const Router = require('./routes/Routes')
+Router(app)
 const PORT = 3000
 
 app.listen(PORT, () => {
