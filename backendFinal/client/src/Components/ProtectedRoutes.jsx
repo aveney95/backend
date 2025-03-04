@@ -1,7 +1,9 @@
 import React, { useEffect } from "react";
 import { Outlet, useNavigate } from "react-router";
 import axios from "axios";
-import LoggedIn from "../LoggedIn"
+import ToDo from "../Components/ToDo"
+
+//this file is handling authentication for the routes
 const ProtectedRoute = () => {
   let nav = useNavigate();
   useEffect(() => {
@@ -13,7 +15,7 @@ const ProtectedRoute = () => {
     })
       .then((res) => {
         console.warn("PROT ROUTE auth res", res);
-        if (res.data.msg !== "valid token") {
+        if (res.data.msg !== "good login") {
           nav("/");
         }
       })
@@ -24,7 +26,7 @@ const ProtectedRoute = () => {
   return (
     <>
     {console.log("Protected Route hit ")}
-      <LoggedIn />
+      <ToDo/>
     </>
   );
 };
